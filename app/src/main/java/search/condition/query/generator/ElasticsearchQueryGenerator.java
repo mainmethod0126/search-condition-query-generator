@@ -1,4 +1,4 @@
-package search.condition.query.generator.impl;
+package search.condition.query.generator;
 
 import java.util.Map;
 
