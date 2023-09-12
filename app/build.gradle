@@ -6,11 +6,26 @@
  * User Manual available at https://docs.gradle.org/8.0.2/userguide/building_java_projects.html
  */
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "io.github.mainmethod0126:app:0.1.1"
+  }
+}
+
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'maven-publish'
     id 'net.linguica.maven-settings' version '0.5'
 }
+
+apply plugin: "io.github.mainmethod0126.simple-semantic-version"
+
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -20,6 +35,70 @@ repositories {
 		url = 'https://pkgs.dev.azure.com/Security365/_packaging/Security365Common/maven/v1/'
 	}
 }
+
+
+
+publishing {
+
+	String inputUsername = project.findProperty("username") ?: ""
+	String inputPassword = project.findProperty("password") ?: ""
+  String inputMavenRepoUrl = project.findProperty("url") ?: ""
+
+	if (inputUsername.isEmpty()) {
+		if (project.hasProperty('mavenRepoUserId')) {
+			inputUsername = "$mavenRepoUserId"
+		} else {
+			println("Warning : Id for using maven repository is not entered. Enter it using the gradle task parameter or define mavenRepoUserId in ~/.gradle/gradle.properties");
+		}
+	}
+
+	if (inputPassword.isEmpty()) {
+		if (project.hasProperty('mavenRepoUserPassword')) {
+			inputPassword = "$mavenRepoUserPassword"
+		} else {
+			println("Warning : Password for using maven repository is not entered. Enter it using the gradle task parameter or define mavenRepoUserPassword in ~/.gradle/gradle.properties");
+		}
+	}
+
+  if (inputMavenRepoUrl.isEmpty()) {
+    if (project.hasProperty('mavenRepoUrl')) {
+      inputMavenRepoUrl = "$mavenRepoUrl"
+    } else {
+      println("Warning : maven repository url is required but not entered. Enter it using the gradle task parameter or define mavenRepoUrl in ~/.gradle/gradle.properties");
+    }
+  }
+
+  publications {
+    mavenJava(MavenPublication) { 
+      from components.java
+
+      groupId = 'io.github.mainmethod0126'
+      artifactId = 'search-condition-query-generator'
+
+      println("publish infos")
+      println("groupId : " + groupId)
+      println("artifactId : " + artifactId)
+      
+      
+      pom {
+          name = 'search-condition-query-generator'
+          description = 'This library makes it easy to convert a predefined Search Condition specification into query formats for databases like Elasticsearch and RDB.'
+      }
+    }
+  }
+
+  repositories {
+    maven{
+      credentials {
+          username = inputUsername
+          password = inputPassword
+      }
+
+      url = inputMavenRepoUrl
+    }
+  }
+}
+
 
 dependencies {
     implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.6'
@@ -45,3 +124,4 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
