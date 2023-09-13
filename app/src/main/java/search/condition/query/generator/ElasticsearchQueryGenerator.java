@@ -38,7 +38,7 @@ public class ElasticsearchQueryGenerator {
 
                     JsonElement elementValue = jsonObject.get("value");
                     if (elementValue == null) {
-                        if ("BETWEEN".equals(operator) || "RANGE".equals(operator)) {
+                        if ("BETWEEN".equalsIgnoreCase(operator) || "RANGE".equalsIgnoreCase(operator)) {
                             JsonElement elementBegin = jsonObject.get("begin");
                             JsonElement elementEnd = jsonObject.get("end");
 
@@ -68,7 +68,7 @@ public class ElasticsearchQueryGenerator {
                                 }
 
                             }
-                        } else if ("EXISTS".equals(operator)) {
+                        } else if ("EXISTS".equalsIgnoreCase(operator)) {
                             if (isNot) {
                                 boolQueryBuilder.mustNot(QueryBuilders.existsQuery(field));
                             } else {
@@ -89,8 +89,8 @@ public class ElasticsearchQueryGenerator {
                                 if (createdBoolQueryBuilder != null) {
                                     boolQueryBuilder = createdBoolQueryBuilder;
                                 } else {
-                                    if ("IN".equals(operator) || "CTNS".equals(operator)
-                                            || "CONTAINS".equals(operator)) {
+                                    if ("IN".equalsIgnoreCase(operator) || "CTNS".equalsIgnoreCase(operator)
+                                            || "CONTAINS".equalsIgnoreCase(operator)) {
                                         BoolQueryBuilder shouldQuery = new BoolQueryBuilder().minimumShouldMatch(1);
                                         shouldQuery.should(QueryBuilders.termQuery(field + ".ngram", value));
                                         shouldQuery.should(QueryBuilders.termQuery(field + ".raw", value));
@@ -152,7 +152,7 @@ public class ElasticsearchQueryGenerator {
         Class<?> clazz = value.getClass();
 
         if (clazz == String.class) {
-            if ("eq".equals(operator) || "=".equals(operator)) {
+            if ("eq".equalsIgnoreCase(operator) || "=".equalsIgnoreCase(operator)) {
 
                 BoolQueryBuilder shouldQuery = new BoolQueryBuilder().minimumShouldMatch(1);
                 shouldQuery.should(QueryBuilders.termQuery(field + ".raw", value));
@@ -161,7 +161,7 @@ public class ElasticsearchQueryGenerator {
                 return boolQueryBuilder;
             }
 
-            if ("neq".equals(operator) || "!=".equals(operator) || "<>".equals(operator)) {
+            if ("neq".equalsIgnoreCase(operator) || "!=".equalsIgnoreCase(operator) || "<>".equalsIgnoreCase(operator)) {
 
                 BoolQueryBuilder tempBoolQueryBuilder = QueryBuilders.boolQuery();
                 tempBoolQueryBuilder.filter(QueryBuilders.termQuery(field, value));
@@ -173,25 +173,25 @@ public class ElasticsearchQueryGenerator {
 
         } else if (clazz == long.class || clazz == Long.class || clazz == int.class || clazz == Integer.class
                 || clazz == double.class || clazz == Double.class) {
-            if ("lt".equals(operator) || "<".equals(operator)) {
+            if ("lt".equalsIgnoreCase(operator) || "<".equalsIgnoreCase(operator)) {
                 boolQueryBuilder.filter(
                         QueryBuilders.rangeQuery(field).lt(value));
                 return boolQueryBuilder;
             }
 
-            if ("le".equals(operator) || "<=".equals(operator)) {
+            if ("le".equalsIgnoreCase(operator) || "<=".equalsIgnoreCase(operator)) {
                 boolQueryBuilder.filter(
                         QueryBuilders.rangeQuery(field).lte(value));
                 return boolQueryBuilder;
             }
 
-            if ("gt".equals(operator) || ">".equals(operator)) {
+            if ("gt".equalsIgnoreCase(operator) || ">".equalsIgnoreCase(operator)) {
                 boolQueryBuilder.filter(
                         QueryBuilders.rangeQuery(field).gt(value));
                 return boolQueryBuilder;
             }
 
-            if ("gte".equals(operator) || ">=".equals(operator)) {
+            if ("gte".equalsIgnoreCase(operator) || ">=".equalsIgnoreCase(operator)) {
                 boolQueryBuilder.filter(
                         QueryBuilders.rangeQuery(field).gte(value));
                 return boolQueryBuilder;
