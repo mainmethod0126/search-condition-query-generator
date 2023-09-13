@@ -102,10 +102,8 @@ publishing {
 
 dependencies {
     implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.6'
-	implementation 'org.elasticsearch.client:elasticsearch-rest-client:7.17.6'
-	implementation 'org.elasticsearch:elasticsearch:7.17.6'
-
-    implementation group: 'com.softcamp', name: 'jsc', version: '0.0.4+jdk15'
+    implementation 'org.elasticsearch.client:elasticsearch-rest-client:7.17.6'
+    implementation 'org.elasticsearch:elasticsearch:7.17.6'
 
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
