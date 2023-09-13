@@ -8,12 +8,32 @@ import org.elasticsearch.index.query.QueryBuilders;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.softcamp.jsc.Condition;
+
+import search.condition.query.generator.exception.InvalidFormatException;
 
 public class ElasticsearchQueryGenerator {
 
-    public BoolQueryBuilder generate(Condition condition) throws Exception {
-        return generate(condition.toJson());
+    /**
+     * If the JSON format is correct but not in a valid format for searching, it
+     * will return false.
+     * 
+     * return true sample
+     * {
+     * "field" : "~",
+     * "operator" : "~",
+     * "value" : "~"
+     * }
+     * 
+     * return false sample
+     * {
+     * "name" : "woosub"
+     * }
+     * 
+     * @param jsonElement
+     * @return true = vaild, false = invaild
+     */
+    public boolean hasRequiredKey(JsonObject jsonObject) {
+        return jsonObject.has("field") && jsonObject.has("operator") && jsonObject.has("value");
     }
 
     public BoolQueryBuilder generate(JsonElement jsonElement) throws Exception {
@@ -22,6 +42,12 @@ public class ElasticsearchQueryGenerator {
 
         if (jsonElement != null && jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+            if (!hasRequiredKey(jsonObject)) {
+                throw new InvalidFormatException(
+                        "it may be in the correct JSON format but may not contain the 'field,' 'operator,' and 'value' keys.");
+            }
+
             JsonElement elementField = jsonObject.get("field");
             if (elementField != null && elementField.isJsonPrimitive()
                     && elementField.getAsJsonPrimitive().isString()) {
@@ -129,6 +155,9 @@ public class ElasticsearchQueryGenerator {
             for (JsonElement element : jsonElement.getAsJsonArray()) {
                 boolQueryBuilder.filter(generate(element));
             }
+        } else {
+            throw new InvalidFormatException(
+                    "It appears to not be a valid JSON format consisting of key-value pairs.");
         }
 
         return boolQueryBuilder;
@@ -161,7 +190,8 @@ public class ElasticsearchQueryGenerator {
                 return boolQueryBuilder;
             }
 
-            if ("neq".equalsIgnoreCase(operator) || "!=".equalsIgnoreCase(operator) || "<>".equalsIgnoreCase(operator)) {
+            if ("neq".equalsIgnoreCase(operator) || "!=".equalsIgnoreCase(operator)
+                    || "<>".equalsIgnoreCase(operator)) {
 
                 BoolQueryBuilder tempBoolQueryBuilder = QueryBuilders.boolQuery();
                 tempBoolQueryBuilder.filter(QueryBuilders.termQuery(field, value));
