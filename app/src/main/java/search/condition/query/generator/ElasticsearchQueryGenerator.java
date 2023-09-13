@@ -14,9 +14,6 @@ import search.condition.query.generator.exception.InvalidFormatException;
 public class ElasticsearchQueryGenerator {
 
     /**
-     * If the JSON format is correct but not in a valid format for searching, it
-     * will return false.
-     * 
      * return true sample
      * {
      * "field" : "~",
