@@ -1,20 +1,34 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Search Condition Query Generator
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This library makes it easy to convert a predefined Search Condition specification into query formats for databases like Elasticsearch and RDB.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Usage
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### RdbQueryGenerator
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+This feature has not been developed yet
+
+---
+
+### ElasticsearchQueryGenerator
+
+Create an `org.elasticsearch.index.query.BoolQueryBuilder` object from the `com.google.gson.JsonElement` object.
+
+Library users can benefit from this `BoolQueryBuilder` object for convenient Elasticsearch query construction.
+
+#### sample
+
+```java
+String searchRequest = "{\"field\":\"user.name\",\"operator\":\"eq\",\"value\":\"shinwoosub\"}";
+JsonElement json = (JsonElement) (new Gson()).fromJson(searchRequest, JsonElement.class);
+
+// Create an `org.elasticsearch.index.query.BoolQueryBuilder` object from the `com.google.gson.JsonElement` object
+BoolQueryBuilder boolQueryBuilder = generate(jsonElement);
+
+SearchRequest searchRequest = this.index.createSearchRequest();
+SearchSourceBuilder searchSourceBuilder = this.index.createSearchSourceBuilder().trackTotalHits(true)
+        .query(boolQueryBuilder);
+
+searchRequest.source(searchSourceBuilder);
+SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+```
