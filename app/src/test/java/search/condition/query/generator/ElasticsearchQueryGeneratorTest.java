@@ -1,8 +1,9 @@
 package search.condition.query.generator;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import static org.assertj.core.api.Assertions.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,22 +29,22 @@ public class ElasticsearchQueryGeneratorTest {
     }
 
     @Test
-    @DisplayName("Generating should throw InvalidFormatException when the parameter is not a valid JSON")
-    public void testGenerate_whenParamIsNotJson_thenThrowInvalidFormatException() {
+    @DisplayName("Generating should succeed when the parameter is a valid JSON element")
+    public void testGenerate_whenParamIsValidLongJsonElement_thenSuccess() throws Exception {
 
-        String searchRequest = "aaa";
+        String searchRequest = "{\"sample0\":{\"field\":\"name\",\"operator\":\"=\",\"value\":\"test\"},\"sample1\":[{\"field\":\"name\",\"operator\":\"=\",\"value\":\"test\"},{\"field\":\"age\",\"operator\":\">\",\"value\":10}],\"sample2\":{\"group0\":{\"field\":\"name\",\"operator\":\"=\",\"value\":\"test\"},\"group1\":{\"field\":\"age\",\"operator\":\">\",\"value\":10}},\"sample4\":{\"field\":\"city\",\"operator\":\"in\",\"value\":\"dea\"},\"sample5\":{\"field\":\"age\",\"operator\":\"range\",\"begin\":20,\"end\":30},\"sample3\":{\"field\":\"city\",\"operator\":\"range\",\"value\":[\"seoul\",\"daejeon\",\"daegu\",\"busan\"]}}";
         JsonElement json = (JsonElement) (new Gson()).fromJson(searchRequest, JsonElement.class);
 
-        assertThatThrownBy(() -> {
-            generator.generate(json);
-        }).isInstanceOf(InvalidFormatException.class);
+        BoolQueryBuilder boolQueryBuilder = generator.generate(json);
+
+        assertThat(boolQueryBuilder).isNotNull();
     }
 
     @Test
-    @DisplayName("Generating should throw InvalidFormatException when the parameter JSON is not in the search format")
-    public void testGenerate_whenParamJsonIsNotSearchFormat_thenThrowInvalidFormatException() {
+    @DisplayName("Generating should throw InvalidFormatException when the parameter is not a valid JSON")
+    public void testGenerate_whenParamIsNotJson_thenInvalidFormatException() {
 
-        String searchRequest = "{\"field\":\"user.name\",\"name\":\"eq\",\"desc\":\"shinwoosub\"}";
+        String searchRequest = "aaa";
         JsonElement json = (JsonElement) (new Gson()).fromJson(searchRequest, JsonElement.class);
 
         assertThatThrownBy(() -> {

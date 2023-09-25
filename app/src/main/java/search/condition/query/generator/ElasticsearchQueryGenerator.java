@@ -13,26 +13,6 @@ import search.condition.query.generator.exception.InvalidFormatException;
 
 public class ElasticsearchQueryGenerator {
 
-    /**
-     * return true sample
-     * {
-     * "field" : "~",
-     * "operator" : "~",
-     * "value" : "~"
-     * }
-     * 
-     * return false sample
-     * {
-     * "name" : "woosub"
-     * }
-     * 
-     * @param jsonElement
-     * @return true = vaild, false = invaild
-     */
-    public boolean hasRequiredKey(JsonObject jsonObject) {
-        return jsonObject.has("field") && jsonObject.has("operator") && jsonObject.has("value");
-    }
-
     public BoolQueryBuilder generate(JsonElement jsonElement) throws Exception {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -40,10 +20,6 @@ public class ElasticsearchQueryGenerator {
         if (jsonElement != null && jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-            if (!hasRequiredKey(jsonObject)) {
-                throw new InvalidFormatException(
-                        "it may be in the correct JSON format but may not contain the 'field,' 'operator,' and 'value' keys.");
-            }
 
             JsonElement elementField = jsonObject.get("field");
             if (elementField != null && elementField.isJsonPrimitive()
@@ -60,6 +36,8 @@ public class ElasticsearchQueryGenerator {
                     }
 
                     JsonElement elementValue = jsonObject.get("value");
+
+
                     if (elementValue == null) {
                         if ("BETWEEN".equalsIgnoreCase(operator) || "RANGE".equalsIgnoreCase(operator)) {
                             JsonElement elementBegin = jsonObject.get("begin");
@@ -160,9 +138,9 @@ public class ElasticsearchQueryGenerator {
         return boolQueryBuilder;
     }
 
-    public String toString(JsonElement elementValue) throws Exception {
+    public String toString(JsonElement elementValue) {
 
-        String str = new String();
+        String str = "";
 
         if (elementValue.isJsonPrimitive()) {
             str = elementValue.getAsJsonPrimitive().getAsString();
