@@ -18,10 +18,9 @@ buildscript {
 }
 
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
-    id 'application'
+    id 'java-library'
     id 'maven-publish'
-    id 'net.linguica.maven-settings' version '0.5'
+    id 'signing'
 }
 
 apply plugin: "io.github.mainmethod0126.simple-semantic-version"
@@ -30,13 +29,12 @@ apply plugin: "io.github.mainmethod0126.simple-semantic-version"
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
-    maven {
-        name = 'Security365Common'
-		url = 'https://pkgs.dev.azure.com/Security365/_packaging/Security365Common/maven/v1/'
-	}
 }
 
-
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 publishing {
 
@@ -83,6 +81,26 @@ publishing {
       pom {
           name = 'search-condition-query-generator'
           description = 'This library makes it easy to convert a predefined Search Condition specification into query formats for databases like Elasticsearch and RDB.'
+          url = 'https://github.com/mainmethod0126/search-condition-query-generator'
+
+          licenses {
+              license {
+                  name = 'MIT'
+                  url = 'https://github.com/mainmethod0126/search-condition-query-generator/blob/main/LICENSE'
+              }
+          }
+          developers {
+              developer {
+                  id = 'mainmethod0126'
+                  name = 'Shin Woosub'
+                  email = 'mainmethod0126@gmail.com'
+              }
+          }
+          scm {
+              connection = 'scm:git:git://github.com/mainmethod0126/search-condition-query-generator.git'
+              developerConnection = 'scm:git:ssh://github.com:mainmethod0126/search-condition-query-generator.git'
+              url = 'https://github.com/mainmethod0126/search-condition-query-generator'
+          }
       }
     }
   }
@@ -118,9 +136,8 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
-application {
-    // Define the main class for the application.
-    mainClass = 'search.condition.query.generator.App'
+signing {
+    sign publishing.publications.mavenJava
 }
 
 tasks.named('test') {

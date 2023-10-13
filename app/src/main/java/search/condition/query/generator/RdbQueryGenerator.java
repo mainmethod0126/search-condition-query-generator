@@ -58,7 +58,7 @@ public class RdbQueryGenerator {
                                 whereCondition += elementEnd.getAsString();
 
                             }
-                        } // EXISTS 스킵 RDB 에서 field 존재여부를 확인할 이유가 딱히 없어보임
+                        } 
                     } else {
                         if (elementValue.isJsonPrimitive()) {
                             JsonPrimitive jsonPrimitive = elementValue.getAsJsonPrimitive();
