@@ -4,6 +4,38 @@ This library makes it easy to convert a predefined Search Condition specificatio
 
 ## Usage
 
+### Add dependency
+
+[Go to 🚀 maven central repository](https://central.sonatype.com/artifact/io.github.mainmethod0126/search-condition-query-generator)
+
+#### for Gradle
+
+```groovy
+implementation group: 'io.github.mainmethod0126', name: 'search-condition-query-generator', version: '0.1.0'
+```
+
+- short
+  
+```groovy
+implementation 'io.github.mainmethod0126:search-condition-query-generator:0.1.0'
+```
+
+- kotlin
+  
+```kotlin
+implementation("io.github.mainmethod0126:search-condition-query-generator:0.1.0")
+```
+
+#### for Maven
+
+```xml
+<dependency>
+    <groupId>io.github.mainmethod0126</groupId>
+    <artifactId>search-condition-query-generator</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
 ### RdbQueryGenerator
 
 This feature has not been developed yet
